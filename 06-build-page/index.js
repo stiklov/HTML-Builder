@@ -23,7 +23,7 @@ function replaceTemplates() {
             if (err) console.error(err);
             for (const file of files) {
                 if (file.isFile()) {
-                    const filePath = path.join(components, file.name);
+                    let filePath = path.join(components, file.name).replace(/\\/g, '/');
                     const name = filePath.split('/').reverse()[0].split('.')[0];
                     const extension = filePath.split('.')[1];
                     if (extension === 'html') {
@@ -80,11 +80,11 @@ async function clear(folder) {
     let files = await fs.promises.readdir(folder, {withFileTypes: true});
     for (const file of files) {
         if (file.isFile()) {
-            fs.promises.unlink(path.join(folder, file.name));
+            await fs.promises.unlink(path.join(folder, file.name));
         }
         else {
             await clear(path.join(folder, file.name));
-            fs.promises.rmdir(path.join(folder, file.name));
+            await fs.promises.rmdir(path.join(folder, file.name));
         }
     }
 }
